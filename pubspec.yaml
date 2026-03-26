@@ -1,0 +1,78 @@
+name: app
+description: "Allows users to recieve data from services and sync them between devices."
+publish_to: 'none' 
+version: 1.0.0+1
+
+
+environment:
+  sdk: ^3.10.4
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  archive: any  
+  animated_tree_view: any  
+  cupertino_icons: ^1.0.8
+  encrypt: any
+  file_picker : any
+  flutter_dotenv: any
+  flutter_secure_storage: any
+  gpt_markdown:
+   git:
+    url: https://github.com/purencool/gpt_markdown.git
+  intl: any
+  http: any
+  mailer: any
+  markdown: any
+  path: any
+  path_provider: any
+  pdf: any
+  printing: ^5.11.0
+  provider: any
+  shared_preferences: any
+  speech_to_text: any
+  window_manager: any
+  webview_flutter: any
+  md_editor: 
+   git:
+    url: https://github.com/purencool/flutter_md_editor.git
+  # webview_cef: any
+  # git:
+  #  url: https://github.com/purencool/webview_cef.git  
+  #webview_cef:
+  #  git:
+  #    url: https://github.com/dip-develop/webview_cef.git
+  #    ref: feat/cache-path-and-cef-flavor
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  mockito: ^5.4.4
+  build_runner: ^2.4.8
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+
+flutter_launcher_icons:
+  image_path: "assets/desktop/icon.png"
+  android:
+    generate: true
+    image_path: "assets/desktop/icon.png"
+  #ios:
+  #  generate: true
+  #  image_path: "assets/desktop/icon.png"
+  macos:
+    generate: true
+    image_path: "assets/desktop/icon.png"
+  windows:
+    generate: true
+    image_path: "assets/desktop/icon.png"
+  linux:
+    generate: true
+    image_path: "assets/desktop/icon.png"
