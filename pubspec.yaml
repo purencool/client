@@ -16,6 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   encrypt: any
   file_picker : any
+  flutter_bloc : any
   flutter_dotenv: any
   flutter_secure_storage: any
   gpt_markdown:

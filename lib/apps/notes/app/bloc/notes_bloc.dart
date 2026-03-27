@@ -6,70 +6,88 @@
 
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart' as p;
 import 'package:animated_tree_view/animated_tree_view.dart';
+import 'package:path/path.dart' as p;
 
-// --- Events ---
+// Events
 abstract class NotesEvent {}
+
 class LoadTreeRequested extends NotesEvent {}
-class DirectoryPickerRequested extends NotesEvent {}
+
 class FileSelected extends NotesEvent {
   final TreeNode<String> node;
   FileSelected(this.node);
 }
 
-// --- States ---
+class DirectoryPickerRequested extends NotesEvent {}
+
+// State
 class NotesState {
   final TreeNode<String> fileTree;
   final String? selectedFileKey;
+  final String title;
   final String content;
+  final String category;
+  final String workflow;
   final bool isLoading;
 
   NotesState({
     required this.fileTree,
     this.selectedFileKey,
-    this.content = "",
+    this.title = '',
+    this.content = '',
+    this.category = '',
+    this.workflow = '',
     this.isLoading = false,
   });
 
   NotesState copyWith({
     TreeNode<String>? fileTree,
     String? selectedFileKey,
+    String? title,
     String? content,
+    String? category,
+    String? workflow,
     bool? isLoading,
   }) {
     return NotesState(
       fileTree: fileTree ?? this.fileTree,
       selectedFileKey: selectedFileKey ?? this.selectedFileKey,
+      title: title ?? this.title,
       content: content ?? this.content,
-      isLoading: isLoading ?? false,
+      category: category ?? this.category,
+      workflow: workflow ?? this.workflow,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }
 
-// --- The BLoC ---
+// Bloc
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
   NotesBloc() : super(NotesState(fileTree: TreeNode.root())) {
     on<LoadTreeRequested>(_onLoadTree);
     on<FileSelected>(_onFileSelected);
-    // Note: DirectoryPicker logic would be triggered here via service
+    on<DirectoryPickerRequested>(_onDirectoryPickerRequested);
   }
 
-  Future<void> _onLoadTree(LoadTreeRequested event, emit) async {
+  Future<void> _onLoadTree(LoadTreeRequested event, Emitter<NotesState> emit) async {
     emit(state.copyWith(isLoading: true));
-    // In 2026, we fetch the tree from the Sovereign Vault/Service
-    // final tree = await AppRegistry.instance.notesService.getTree();
-    // emit(state.copyWith(fileTree: tree));
+    // TODO: Implement logic to load the file tree from a service
   }
 
-  Future<void> _onFileSelected(FileSelected event, emit) async {
+  Future<void> _onFileSelected(FileSelected event, Emitter<NotesState> emit) async {
     final String path = event.node.data ?? '';
     if (path.isNotEmpty && await File(path).exists()) {
       final content = await File(path).readAsString();
       emit(state.copyWith(
         selectedFileKey: event.node.key,
+        title: p.basenameWithoutExtension(path),
         content: content,
       ));
     }
+  }
+
+  Future<void> _onDirectoryPickerRequested(DirectoryPickerRequested event, Emitter<NotesState> emit) async {
+    // TODO: Implement directory picker logic
   }
 }

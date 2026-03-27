@@ -4,13 +4,12 @@
  * root of this project in the file: license.md
  */
 
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart' as p;
 
 /// Custom & BLoC
-import '../bloc/notes_bloc.dart';
+import './bloc/notes_bloc.dart';
 import '../../../registry/app.dart'; 
 import '../../../layout/widgets/app_file_tree_sidebar.dart';
 import '../../../layout/widgets/app_content_area.dart';
@@ -23,10 +22,11 @@ class Notes extends StatefulWidget {
 }
 
 class _NotesState extends State<Notes> {
-  // UI-ONLY STATE
   bool _isSidebarOpen = true;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String? _selectedFileKey;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+ // TreeNode<String> _fileTree = TreeNode.root();
   // Controllers remain here for performance (to avoid lag during typing)
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
@@ -44,6 +44,14 @@ class _NotesState extends State<Notes> {
 
   @override
   Widget build(BuildContext context) {
+    //final labels = context.labels['notes'] ?? {};
+
+    // Permission check
+    if (!context.isAllowed('notes')) {
+      return const AccessDenied();
+    }
+
+
     return BlocProvider(
       create: (context) => NotesBloc()..add(LoadTreeRequested()),
       child: BlocListener<NotesBloc, NotesState>(
@@ -81,11 +89,18 @@ class _NotesState extends State<Notes> {
                     child: state.selectedFileKey == null
                         ? const Center(child: Text("Select a file from the explorer"))
                         : AppContentArea(
-                            fileKey: state.selectedFileKey,
-                            titleController: _titleController,
-                            contentController: _contentController,
-                            // Other controllers...
-                          ),
+                          fileKey: _selectedFileKey,
+                          titleController: _titleController,
+                          contentController: _contentController,
+                          categoryController: _categoryController,
+                          workflowController: _workflowController,
+                          onFileSelected: (key) {
+                            setState(() {
+                              _selectedFileKey = key;
+                              // Controllers are already updated by AppContentArea before calling this
+                            });
+                          },
+                        ),
                   ),
                 ],
               ),
