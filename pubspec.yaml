@@ -15,6 +15,7 @@ dependencies:
   animated_tree_view: any  
   cupertino_icons: ^1.0.8
   encrypt: any
+  equatable : any 
   file_picker : any
   flutter_bloc : any
   flutter_dotenv: any

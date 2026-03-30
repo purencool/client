@@ -8,7 +8,7 @@ import 'package:animated_tree_view/animated_tree_view.dart';
 
 final Map<String, dynamic>? _data = null;
 
-
+/// TODO: This may not be needed or moved into a service the code moves to SWAT.
 class AppDataProvider {
 
   Future<TreeNode<String>> getTree(String appName) async {
