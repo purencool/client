@@ -5,17 +5,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'swat_state.dart';
 import 'swat_event.dart';
 import '../../../services/logging/logging.dart';
-import '../../../services/io/file_system.dart';
+import '../../../services/io/resources_system.dart';
 
 class SwatBloc extends Bloc<SwatEvent, SwatState> {
   final ILogging _logger;
-  final FileSystem _fileSystem;
+  final ResourcesSystem _fileSystem;
 
   /// Single unified constructor using Dependency Injection.
   /// Standardizing on 'NormalPulseState' as the high-integrity initial state.
-  SwatBloc({ILogging? logger, FileSystem? fileSystem})
+  SwatBloc({ILogging? logger, ResourcesSystem? fileSystem})
     : _logger = logger ?? Logging(),
-      _fileSystem = fileSystem ?? FileSystem(),
+      _fileSystem = fileSystem ?? ResourcesSystem(),
       super(NormalPulseState()) {
     // Activate the Protocol
     on<ActivateSwatEvent>((event, emit) {
@@ -38,7 +38,7 @@ class SwatBloc extends Bloc<SwatEvent, SwatState> {
         "Manual directory request: ${event.path}",
         level: LogLevel.info,
       );
-      await _fileSystem.openDirectory(event.path);
+      await _fileSystem.openResources(event.path);
     });
 
     // 4. Handle Operational/Audit Directory opening
@@ -50,7 +50,7 @@ class SwatBloc extends Bloc<SwatEvent, SwatState> {
       );
 
       // Using the injected instance instead of FileSystem.instance for consistency
-      await _fileSystem.openDirectory(auditPath);
+      await _fileSystem.openResources(auditPath);
     });
   }
 }

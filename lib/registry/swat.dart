@@ -4,7 +4,7 @@ export '../core/swat/swat/swat_state.dart';
 
 import '../core/swat/swat/swat_bloc.dart';
 import '../../../services/logging/logging.dart';
-import '../../../services/io/file_system.dart';
+import '../services/io/resources_system.dart';
 
 /// The SwatRegistry acts as the infrastructure coordinator.
 /// It separates the UI from how the SWAT Protocol is actually constructed.
@@ -17,7 +17,7 @@ class SwatRegistry {
   static SwatBloc create() {
     return SwatBloc(
       logger: Logging(),
-      fileSystem: FileSystem(),
+      fileSystem: ResourcesSystem(),
     );
   }
 }

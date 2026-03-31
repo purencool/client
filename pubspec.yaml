@@ -14,6 +14,7 @@ dependencies:
   archive: any  
   animated_tree_view: any  
   cupertino_icons: ^1.0.8
+  cryptography : any
   encrypt: any
   equatable : any 
   file_picker : any
