@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// Custom & BLoC
 import './bloc/notes_bloc.dart';
 import '../../../registry/app.dart'; 
-import '../../../layout/widgets/app_file_tree_sidebar.dart';
+import '../../../layout/widgets/tree_sidebar/app_file_tree_sidebar.dart';
 import '../../../layout/widgets/app_content_area.dart';
 
 class Notes extends StatefulWidget {
@@ -44,7 +44,7 @@ class _NotesState extends State<Notes> {
 
   @override
   Widget build(BuildContext context) {
-    //final labels = context.labels['notes'] ?? {};
+    final labels = context.labels['notes'] ?? {};
 
     // Permission check
     if (!context.isAllowed('notes')) {
@@ -65,6 +65,8 @@ class _NotesState extends State<Notes> {
           builder: (context, state) {
             return Scaffold(
               key: _scaffoldKey,
+              appBar: AppBar(title: Text(labels['title'] ?? "")),
+              drawer: const AppMenu(),
               body: Row(
                 children: [
                   // SLIDING SIDEBAR
