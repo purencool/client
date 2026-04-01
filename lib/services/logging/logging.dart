@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
+import '../../models/global_resources.dart';
 
 /// Defines the severity of the system telemetry.
 enum LogLevel {
@@ -16,8 +17,6 @@ abstract class ILogging {
 }
 
 class Logging implements ILogging {
-  // Use a private constructor for a singleton pattern if desired, 
-  // though dependency injection is preferred.
   Logging();
 
   @override
@@ -27,23 +26,39 @@ class Logging implements ILogging {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    // We only log debug info in debug mode to keep production logs clean.
+    // Guard clause: Skip debug logs in production
     if (level == LogLevel.debug && !kDebugMode) return;
 
     final String time = DateTime.now().toIso8601String();
     final String label = level.name.toUpperCase();
-    
-    // Using dart:developer log allows for better categorization in DevTools
+    final String fullLogEntry = '[$time] [$label] $message';
+
+    // Output to Developer Console (Standard behavior)
     dev.log(
-      '[$time] $message',
+      fullLogEntry,
       name: 'Client.$label',
       level: _getPriority(level),
       error: error,
       stackTrace: stackTrace,
     );
 
-    // If it's a critical error, you might want to trigger additional 
-    // internal logic here (e.g., local crash reporting).
+    // Persist to Global Resources (Audit behavior)
+    // We pass the string entry, not the 'dev' library.
+    _writeToGlobalResources(fullLogEntry, error);
+  }
+
+  /// Internal helper to sync logs with the application state.
+  void _writeToGlobalResources(String logEntry, Object? error) {
+    try {
+      // Assuming logWrite accepts a String. 
+      // If there's an error object, we append it to the record.
+      final record = error != null ? '$logEntry | Error: $error' : logEntry;
+      
+      GlobalResources().logWrite(record);
+    } catch (e) {
+      // Fail-safe to prevent logging failures from crashing the app
+      debugPrint('Critial Failure: Logging to GlobalResources failed: $e');
+    }
   }
 
   int _getPriority(LogLevel level) {

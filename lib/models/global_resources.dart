@@ -163,13 +163,24 @@ class GlobalResources {
   Future<File> get profileApplogging async =>
       File(p.join((await baseDir).path, 'app_errors.log'));    
 
-  Future<void> logError(dynamic error, StackTrace? stackTrace) async {
+
+  Future<void> logStackTraceError(dynamic error, StackTrace? stackTrace) async {
     try {
       final file = await profileApplogging;
       final timestamp = DateTime.now().toIso8601String();
       await file.writeAsString('[$timestamp] $error\n$stackTrace\n\n', mode: FileMode.append);
     } catch (e) {
       print('Failed to write error log: $e');
+    }
+  }
+
+  Future<void> logWrite(dynamic logging) async {
+    try {
+      final file = await profileApplogging;
+      final timestamp = DateTime.now().toIso8601String();
+      await file.writeAsString('[$timestamp] $logging\n\n', mode: FileMode.append);
+    } catch (e) {
+      print(logging);
     }
   }
 }

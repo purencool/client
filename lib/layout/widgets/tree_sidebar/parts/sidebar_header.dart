@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+// Custom Code
+import '../../../../registry/swat.dart';
+
 class SidebarHeader extends StatelessWidget {
   final String title;
-  final VoidCallback onClose;
+  final VoidCallback? onOpenDirectory;
   final VoidCallback? onNewFolder;
   final VoidCallback? onNewFile;
-  final VoidCallback? onOpenDirectory;
+  final VoidCallback onClose;
 
   const SidebarHeader({
     super.key,
@@ -15,6 +18,20 @@ class SidebarHeader extends StatelessWidget {
     this.onNewFile,
     this.onOpenDirectory,
   });
+
+  // These functions act as the wrappers for swat_bloc access
+  void _onOpenDirectory(BuildContext context) {
+    context.read<SwatBloc>().add(OpenDirectoryRequested());
+  }
+
+  void _onNewFolder(BuildContext context) {
+   // context.read<SwatBloc>().add(const CreateFolderRequested());
+  }
+
+  void _onNewFile(BuildContext context) {
+   // context.read<SwatBloc>().add(const CreateFileRequested());
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -34,28 +51,28 @@ class SidebarHeader extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
               if (onOpenDirectory != null)
                 _SidebarAction(
                   icon: Icons.folder_open,
                   tooltip: "Open Directory",
-                  onPressed: onOpenDirectory,
+                  onPressed: () => _onOpenDirectory(context),
                 ),
               if (onNewFolder != null)
                 _SidebarAction(
                   icon: Icons.create_new_folder,
                   tooltip: "New Folder",
-                  onPressed: onNewFolder,
+                  onPressed: () => _onNewFolder(context),
                 ),
               if (onNewFile != null)
                 _SidebarAction(
                   icon: Icons.note_add,
                   tooltip: "New File",
-                  onPressed: onNewFile,
+                  onPressed: () => _onNewFile(context),
                 ),
               _SidebarAction(
                 icon: Icons.menu_open,

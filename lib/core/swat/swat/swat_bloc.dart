@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:file_picker/file_picker.dart';
 
 // Imports for your state and event logic
 import 'swat_state.dart';
@@ -34,23 +34,36 @@ class SwatBloc extends Bloc<SwatEvent, SwatState> {
 
     // Handle Directory Requests from UI
     on<OpenDirectoryRequested>((event, emit) async {
-      _logger.log(
-        "Manual directory request: ${event.path}",
-        level: LogLevel.info,
-      );
-      await _fileSystem.openResources(event.path);
-    });
+      // Resolve the path either from the event or the picker.
+      final String? targetPath =
+          event.path ?? await FilePicker.platform.getDirectoryPath();
 
-    // 4. Handle Operational/Audit Directory opening
-    on<OpenOperationalDirectoriesEvent>((event, emit) async {
-      final String auditPath = Directory.current.absolute.path;
-      _logger.log(
-        "Opening operational audit directory: $auditPath",
-        level: LogLevel.info,
-      );
+      if (targetPath != null) {
+        emit(SwatScanningInProgress());
 
-      // Using the injected instance instead of FileSystem.instance for consistency
-      await _fileSystem.openResources(auditPath);
+        try {
+          // Execute the scan
+          final tree = await _fileSystem.scanResources(targetPath);
+
+          // This confirms the data is ready before the UI reflects the change
+          _logger.log(
+            "Audit Log: Tree created for $targetPath. Total nodes discovered: ${tree.totalNodeCount}",
+            level: LogLevel.info,
+          );
+
+          // Update the state with the results
+          emit(SwatDirectoryLoaded(rootNode: tree));
+        } catch (e, stack) {
+          // Log the failure if the tree construction crashes
+          _logger.log(
+            "Audit Log: Failed to create tree for $targetPath",
+            level: LogLevel.error,
+            error: e,
+            stackTrace: stack,
+          );
+          emit(SwatFailureState(e.toString()));
+        }
+      }
     });
   }
 }

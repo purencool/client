@@ -15,24 +15,36 @@ import 'init.dart';
 import 'registry/routes.dart';
 
 Future<void> main() async {
-  runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-    FlutterError.onError = (FlutterErrorDetails details) {
-      FlutterError.presentError(details);
-      GlobalResources().logError(details.exception, details.stack);
-    };
+      FlutterError.onError = (FlutterErrorDetails details) {
+        FlutterError.presentError(details);
+        GlobalResources().logStackTraceError(details.exception, details.stack);
+      };
 
-    keybindings.defaultConfig();
-    await Init.init();
-    runApp(
-      ActiveConfiguration.provide(
-        child: const MyApp(),
-      ),
-    );
-  }, (error, stack) {
-    GlobalResources().logError(error, stack);
-  });
+      keybindings.defaultConfig();
+      await Init.init();
+      runApp(
+        ActiveConfiguration.provide(
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<SwatBloc>(
+                // Use your world-class registry here
+                create: (context) => SwatRegistry.create(),
+              ),
+            ],
+            child: const MyApp(),
+          ),
+        ),
+      );
+
+    },
+    (error, stack) {
+      GlobalResources().logStackTraceError(error, stack);
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -53,18 +65,18 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-  //  windowManager.addListener(this);
+    //  windowManager.addListener(this);
     // Pre-populate with a welcome message.
     _addMessage("Hello! How can I assist you today?", isUser: false);
     // We're listening to onWindowClose, so we should explicitly prevent the
     // window from closing by default. We will then handle the shutdown
     // process ourselves in the onWindowClose() method.
-   // windowManager.setPreventClose(true);
+    // windowManager.setPreventClose(true);
   }
 
   @override
   void dispose() {
-   // windowManager.removeListener(this);
+    // windowManager.removeListener(this);
     keybindings.dispose();
     super.dispose();
   }
@@ -104,17 +116,17 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
- // @override
- // Future<void> onWindowClose() async {
-    // This is the recommended place to safely close down the webview_cef
-    // subprocess, as noted in the comments within `apps/browser/app/browser.dart`.
-    //try {
-    ///  await webview.WebviewManager().quit();
-   // } catch (e) {
-   //   GlobalResources().logError('Failed to quit webview manager: $e', null);
-   // }
-    //await windowManager.destroy();
- // }
+  // @override
+  // Future<void> onWindowClose() async {
+  // This is the recommended place to safely close down the webview_cef
+  // subprocess, as noted in the comments within `apps/browser/app/browser.dart`.
+  //try {
+  ///  await webview.WebviewManager().quit();
+  // } catch (e) {
+  //   GlobalResources().logError('Failed to quit webview manager: $e', null);
+  // }
+  //await windowManager.destroy();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +185,10 @@ class _MyAppState extends State<MyApp> {
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(
-                          left: BorderSide(color: Colors.grey.shade300, width: 1.0),
+                          left: BorderSide(
+                            color: Colors.grey.shade300,
+                            width: 1.0,
+                          ),
                         ),
                       ),
                       child: HeroControllerScope(
@@ -182,7 +197,8 @@ class _MyAppState extends State<MyApp> {
                         // by the TextField within the chat. Without this, the TextField
                         // would crash.
                         child: Navigator(
-                          onPopPage: (route, result) => false, // We manage closing via state
+                          onPopPage: (route, result) =>
+                              false, // We manage closing via state
                           pages: [
                             MaterialPage(
                               child: Material(
@@ -240,7 +256,8 @@ class _MyAppState extends State<MyApp> {
                           width: (MediaQuery.of(context).size.width * 0.9)
                               .clamp(0.0, 500.0),
                           child: HeroControllerScope(
-                            controller: MaterialApp.createMaterialHeroController(),
+                            controller:
+                                MaterialApp.createMaterialHeroController(),
                             child: Navigator(
                               onPopPage: (route, result) => false,
                               pages: [
@@ -251,8 +268,13 @@ class _MyAppState extends State<MyApp> {
                                       elevation: 8.0,
                                       clipBehavior: Clip.antiAlias,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16.0),
-                                        side: BorderSide(color: Colors.grey.shade400, width: 1.0),
+                                        borderRadius: BorderRadius.circular(
+                                          16.0,
+                                        ),
+                                        side: BorderSide(
+                                          color: Colors.grey.shade400,
+                                          width: 1.0,
+                                        ),
                                       ),
                                       child: AiChatDialog(
                                         isPinned: false,
@@ -260,7 +282,9 @@ class _MyAppState extends State<MyApp> {
                                         messages: _messages,
                                         onSubmitted: _handleSubmitted,
                                         onClose: () {
-                                          setState(() => _isAiDialogShown = false);
+                                          setState(
+                                            () => _isAiDialogShown = false,
+                                          );
                                         },
                                       ),
                                     ),
@@ -302,9 +326,12 @@ class TransparentPage<T> extends Page<T> {
     return PageRouteBuilder<T>(
       settings: this,
       opaque: false, // The key to making the background visible.
-      pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) =>
-          child,
+      pageBuilder:
+          (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) => child,
     );
   }
 }

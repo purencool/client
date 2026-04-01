@@ -5,3 +5,4 @@
  */
 
 export '../models/global_resources.dart';
+export '../services/io/resources_system.dart';

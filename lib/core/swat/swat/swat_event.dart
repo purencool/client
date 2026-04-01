@@ -10,16 +10,12 @@ sealed class SwatEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+
 /// Define concrete event types
 class OpenDirectoryRequested extends SwatEvent {
-  final String path;
-
-  const OpenDirectoryRequested(this.path);
-
-  @override
-  List<Object?> get props => [path];
+  final String? path;
+  const OpenDirectoryRequested({this.path});
 }
-
 class ActivateSwatEvent extends SwatEvent {}
 
 class LogIncidentEvent extends SwatEvent {
@@ -37,5 +33,3 @@ class DeescalateEvent extends SwatEvent {
   @override
   List<Object?> get props => [identifiedDebt];
 }
-
-class OpenOperationalDirectoriesEvent extends SwatEvent {}

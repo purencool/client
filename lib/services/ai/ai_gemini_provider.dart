@@ -77,7 +77,7 @@ class AiGeminiProvider {
         endpointRequests.close();
       }
     } catch (e, stack) {
-      GlobalResources().logError(e, stack);
+      GlobalResources().logStackTraceError(e, stack);
       rethrow;
     }
   }

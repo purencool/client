@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 
+// Custom Code.
+import '../../../services/io/file_node.dart';
+
 abstract class SwatState extends Equatable {
   @override
   List<Object?> get props => [];
@@ -47,4 +50,16 @@ class RecoveryState extends SwatState {
 
   @override
   List<Object?> get props => [identifiedDebt];
+}
+
+
+// Add this class
+class SwatScanningInProgress extends SwatState {
+  SwatScanningInProgress();
+}
+
+// You'll also likely need a state for when the scan is finished
+class SwatDirectoryLoaded extends SwatState {
+  final FileNode rootNode;
+  SwatDirectoryLoaded({required this.rootNode});
 }

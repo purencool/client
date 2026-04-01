@@ -12,6 +12,7 @@ export 'theme.dart';
 export 'data.dart';
 export 'ai.dart';
 export 'keybindings.dart';
+export 'swat.dart';
 
 /// Custom app container layout widgets.
 export '../../layout/widgets/app_menu.dart';
