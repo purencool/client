@@ -8,6 +8,9 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+// Custom Code
+import '../core/network/pipe_proxy.dart';
+
 /// Example usage:
 /// final resources = GlobalResources(profileId: 'foo');
 /// final Directory base = await resources.baseDir;
@@ -21,16 +24,13 @@ class GlobalResources {
   GlobalResources({String? profileId}) : profileId = profileId ?? "";
 
   /// Returns default App directory and creates it if it doesn't exist.
-  Future<Directory> get appDefaultDir async => Directory(
-    p.join((await getApplicationSupportDirectory()).path),
-  );
+  Future<Directory> get appDefaultDir async =>
+      Directory(p.join((await getApplicationSupportDirectory()).path));
 
   /// Returns the base for this profile and creates it if it doesn't exist.
   Future<Directory> get baseDir async => Directory(
     p.join((await getApplicationSupportDirectory()).path, profileId),
   );
-
-  
 
   /// Ensures the profileId base framework exists
   Future<bool> checkProfileIsInstalled() async {
@@ -42,7 +42,7 @@ class GlobalResources {
   }
 
   /// Creates the full profile structure. So that
-  /// configuration can be added and stored on 
+  /// configuration can be added and stored on
   /// local storage.
   Future<Directory> createProfileStructure() async {
     final dir = await baseDir;
@@ -103,6 +103,7 @@ class GlobalResources {
   }
 
   Future<Directory> get userHomeDir => _getUserHomeDirectory();
+
   /// Returns the sync.
   Future<Directory> get syncDir async =>
       Directory(p.join((await baseDir).path, 'sync'));
@@ -147,7 +148,7 @@ class GlobalResources {
   Future<File> get permissionsJson async =>
       File(p.join((await globalDir).path, 'permissions.json'));
 
- /// Returns the [settings] object.
+  /// Returns the [settings] object.
   Future<File> settingsJson() async =>
       File(p.join((await syncDir).path, 'settings.json'));
 
@@ -159,16 +160,19 @@ class GlobalResources {
   Future<File> languageJson(String language) async =>
       File(p.join((await syncLanguageDir).path, '$language.json'));
 
-  /// Logging 
+  /// Logging
   Future<File> get profileApplogging async =>
-      File(p.join((await baseDir).path, 'app_errors.log'));    
-
+      File(p.join((await baseDir).path, 'app_errors.log'));
 
   Future<void> logStackTraceError(dynamic error, StackTrace? stackTrace) async {
     try {
+      final output = PipeProxy.scrub(error);
       final file = await profileApplogging;
       final timestamp = DateTime.now().toIso8601String();
-      await file.writeAsString('[$timestamp] $error\n$stackTrace\n\n', mode: FileMode.append);
+      await file.writeAsString(
+        '[$timestamp] $output\n$stackTrace\n\n',
+        mode: FileMode.append,
+      );
     } catch (e) {
       print('Failed to write error log: $e');
     }
@@ -176,9 +180,13 @@ class GlobalResources {
 
   Future<void> logWrite(dynamic logging) async {
     try {
+      final output = PipeProxy.scrub(logging);
       final file = await profileApplogging;
       final timestamp = DateTime.now().toIso8601String();
-      await file.writeAsString('[$timestamp] $logging\n\n', mode: FileMode.append);
+      await file.writeAsString(
+        '[$timestamp] $output\n\n',
+        mode: FileMode.append,
+      );
     } catch (e) {
       print(logging);
     }
