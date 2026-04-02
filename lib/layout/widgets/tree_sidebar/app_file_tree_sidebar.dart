@@ -15,6 +15,12 @@ import 'parts/sidebar_resizer.dart';
 import 'parts/sidebar_search.dart';
 import 'parts/file_tree_utils.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/swat/swat/swat_bloc.dart';
+import '../../../core/swat/swat/swat_state.dart';
+
+
+
 class AppFileTreeSidebar extends StatefulWidget {
   final TreeNode<String> fileTree;
   final String? selectedFileKey;
