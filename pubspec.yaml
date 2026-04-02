@@ -1,4 +1,4 @@
-name: app
+name: client
 description: "Allows users to recieve data from services and sync them between devices."
 publish_to: 'none' 
 version: 1.0.0+1

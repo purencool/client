@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+//import 'package:mockito/annotations.dart';
+//import 'package:mockito/mockito.dart';
 
 // Import the service to test
 // Note: Since the source code for Configuration was not provided in the context,
 // I am inferring its methods based on usage in other files (like Language widget).
-import 'package:app/services/configuration/configuration.dart';
+import 'package:client/services/configuration/configuration.dart';
 
 // If Configuration depends on external classes (like GlobalResources or File),
 // you would typically mock them here.
