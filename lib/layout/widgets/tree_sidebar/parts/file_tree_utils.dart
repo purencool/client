@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2026 [The Organisation]
+ * This file is subject to the license agreement found in the 
+ * root of this project in the file: license.md
+ */
+
 import 'package:flutter/material.dart';
 import 'package:animated_tree_view/animated_tree_view.dart';
 import 'package:path/path.dart' as p;
