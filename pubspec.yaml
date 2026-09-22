@@ -26,6 +26,7 @@ dependencies:
     url: https://github.com/purencool/gpt_markdown.git
   intl: any
   http: any
+  llamadart: ^0.6.10
   mailer: any
   markdown: any
   path: any
