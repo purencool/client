@@ -26,7 +26,7 @@ dependencies:
     url: https://github.com/purencool/gpt_markdown.git
   intl: any
   http: any
-  llamadart: ^0.6.10
+  llamadart: ^0.8.24
   mailer: any
   markdown: any
   path: any
@@ -50,6 +50,11 @@ dependencies:
   #    url: https://github.com/dip-develop/webview_cef.git
   #    ref: feat/cache-path-and-cef-flavor
 
+dependency_overrides:
+  phosphor_flutter:
+    git:
+      url: https://github.com/phosphor-icons/flutter.git
+      ref: ab72769
 
 dev_dependencies:
   flutter_test:

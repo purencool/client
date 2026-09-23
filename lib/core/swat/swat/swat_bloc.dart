@@ -42,7 +42,7 @@ class SwatBloc extends Bloc<SwatEvent, SwatState> {
     on<OpenDirectoryRequested>((event, emit) async {
       // Resolve the path either from the event or the picker.
       final String? targetPath =
-          event.path ?? await FilePicker.platform.getDirectoryPath();
+          event.path ?? await FilePicker.getDirectoryPath();
 
       if (targetPath != null) {
         emit(SwatScanningInProgress());

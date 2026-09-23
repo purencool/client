@@ -20,7 +20,7 @@ class Directories extends StatefulWidget {
 
 class _DirectoriesState extends State<Directories> {
   Future<void> _pick(BuildContext context, String key) async {
-    String? path = await FilePicker.platform.getDirectoryPath();
+    String? path = await FilePicker.getDirectoryPath();
     if (path != null) {
       await configManager.updateItem(
         type: "app",
